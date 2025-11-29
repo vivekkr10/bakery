@@ -53,19 +53,18 @@ const Testimonial = () => {
     ];
 
     return (
-        <section className="w-full py-20 bg-gradient-to-br from-[#fff9f4] via-[#f3e0d2] to-[#e8d3c5]">
+        <section className="w-full py-20 bg-[#e2bf9d]">
 
             <div className="max-w-7xl mx-auto px-6 md:px-10 relative">
 
                 {/* Faded Big Title */}
-                <h1 className="absolute -top-[80px] left-1/2 -translate-x-1/2 
-                text-[120px] md:text-[160px] font-extrabold 
-                text-[#b75a90]/20 leading-none tracking-wider 
-                select-none pointer-events-none ">
+                <h1 className="absolute sm:-top-[60px] md:-top-[120px] left-1/2 -translate-x-1/2 text-[50px] sm:text-[90px] md:text-[150px] lg:text-[180px] font-extrabold text-[#b75a90]/40 tracking-wider select-none pointer-events-none"
+                >
                     CLIENTS
                 </h1>
 
-                <h2 className="text-4xl md:text-5xl font-extrabold text-[#c85a32] mb-14 text-center">
+
+                <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-14 text-center leading-snug relative">
                     Our Happy Clients
                 </h2>
 

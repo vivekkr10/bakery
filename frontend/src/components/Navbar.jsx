@@ -1,117 +1,231 @@
-import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import logo from "../assets/homePage/logo.jpeg"
+import { useState } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import logo from "../assets/homePage/logo White.png";
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
+    const [open, setOpen] = useState(false);
 
-    // Detect scroll for shadow and background intensity
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const menuItems = ["Home", "Menu", "About", "Gallery", "Contact"];
+    const menuItems = [
+        {
+            name: "Menu",
+            dropdown: [
+                { label: "Cakes", path: "/cakes" },
+                { label: "Pastries", path: "/pastries" },
+                { label: "Cupcakes", path: "/cupcakes" },
+                { label: "Bread & Cookies", path: "/cookies" },
+            ],
+        },
+        {
+            name: "Categories",
+            dropdown: [
+                { label: "Birthday Cakes", path: "/birthday" },
+                { label: "Anniversary Cakes", path: "/anniversary" },
+                { label: "Wedding Cakes", path: "/wedding" },
+            ],
+        },
+        { name: "Gallery", path: "/gallery" },
+        { name: "About", path: "/about" },
+        { name: "Contact", path: "/contact" },
+    ];
 
     return (
-        <nav
-            className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 
-        ${scrolled
-                    ? "backdrop-blur-xl shadow-xl bg-white/30 border-white/40"
-                    : "bg-[#fff0e5]"
-                }
-`}
-        >
-            <div className="max-w-7xl mx-auto px-6 md:px-10 flex justify-between items-center h-20">
-
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] lg:w-[85%] z-50">
+            <div
+                className="bg-[#6f482a]/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.2)]
+                border border-white/20 rounded-full 
+                px-5 sm:px-8 md:px-10 py-3 
+                flex items-center justify-between transition-all"
+            >
                 {/* Logo */}
-                <div className="flex items-center cursor-pointer select-none transition-transform duration-300 hover:scale-110">
+                <Link to="/" className="flex items-center">
                     <img
                         src={logo}
-                        alt="Bakery Logo"
-                        className="h-14 w-auto object-contain drop-shadow-md"
+                        alt="logo"
+                        className="h-10 sm:h-12 w-auto drop-shadow-md hover:scale-110 transition"
                     />
-                </div>
+                </Link>
 
                 {/* Desktop Menu */}
-                <ul className="hidden md:flex space-x-10 text-[#c85a32] font-semibold">
-                    {menuItems.map((item) => (
-                        <li
-                            key={item}
-                            className="relative group cursor-pointer tracking-wide"
-                        >
-                            <span className="group-hover:text-[#dfa26d] transition-colors duration-300">
-                                {item}
-                            </span>
+                <ul className="hidden xl:flex items-center space-x-8 text-white font-semibold">
+                    {menuItems.map((item) =>
+                        item.dropdown ? (
+                            <li key={item.name} className="relative group cursor-pointer">
+                                <span className="flex items-center hover:text-[#d78f52] transition">
+                                    {item.name}
+                                    <ChevronDown
+                                        size={16}
+                                        className="ml-1 group-hover:rotate-180 transition-transform duration-300"
+                                    />
+                                </span>
 
-                            {/* underline animation */}
-                            <span
-                                className="absolute left-0 -bottom-1 w-0 h-0.5 bg-[#dfa26d] rounded-full 
-                       group-hover:w-full transition-all duration-300"
-                            />
-                        </li>
-                    ))}
+                                {/* Dropdown */}
+                                <div
+                                    className="absolute top-full left-1/2 -translate-x-1/2 
+                                    w-48 bg-white/95 backdrop-blur-md shadow-xl rounded-xl py-2 mt-3
+                                    opacity-0 scale-95 pointer-events-none
+                                    group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto
+                                    transition-all duration-300 ease-out"
+                                >
+                                    {item.dropdown.map((d) => (
+                                        <Link
+                                            key={d.label}
+                                            to={d.path}
+                                            className="block px-4 py-2 text-sm text-[#8b5e3c] hover:bg-[#f8e9dd] hover:text-[#c57b41] transition"
+                                        >
+                                            {d.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </li>
+                        ) : (
+                            <li key={item.name}>
+                                <Link
+                                    to={item.path}
+                                    className="hover:text-[#d78f52] transition"
+                                >
+                                    {item.name}
+                                </Link>
+                            </li>
+                        )
+                    )}
                 </ul>
 
-                {/* Order Button */}
-                <div className="hidden md:flex items-center gap-4">
-                    <button
-                        className="bg-[#dfa26d] 
-          text-white px-6 py-2 rounded-full shadow-lg font-semibold hover:bg-[#e8b67b] hover:text-white 
-          hover:shadow-xl hover:scale-105 transition-all duration-300"
-                    >
-                        Order Now
-                    </button>
-
-                    <button
-                        className="bg-white text-[#dfa26d] border-2 border-[#dfa26d] 
-          px-6 py-2 rounded-full shadow-lg font-semibold
-          hover:bg-[#e8b67b] hover:text-white hover:scale-105 transition-all duration-300"
-                    >
-                        Login Now
-                    </button>
+                {/* Desktop Buttons */}
+                <div className="hidden xl:flex items-center gap-3">
+                    <Link to="/order">
+                        <button className="px-6 py-2 rounded-full bg-gradient-to-r from-[#dda56a] to-[#e8b381] 
+                        text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition">
+                            Order Now
+                        </button>
+                    </Link>
+                    <Link to="/login">
+                        <button className="px-6 py-2 rounded-full bg-white 
+                        text-[#8b5e3c] font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition">
+                            Login Now
+                        </button>
+                    </Link>
                 </div>
 
-                {/* Mobile Toggle */}
-                <div className="md:hidden cursor-pointer text-gray-800" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={28} /> : <Menu size={28} />}
-                </div>
+                {/* Mobile Menu Toggle */}
+                <button className="xl:hidden text-white" onClick={() => setOpen(!open)}>
+
+                    {open ? <X size={28} /> : <Menu size={28} />}
+                </button>
             </div>
 
             {/* Mobile Menu */}
-            <div className={`md:hidden transition-all duration-500 overflow-hidden 
-            ${isOpen ? "max-h-96 py-4" : "max-h-0"}`}>
-                <ul className="flex flex-col space-y-4 px-6 text-gray-700 font-semibold">
-                    {menuItems.map((item) => (
-                        <li
-                            key={item}
-                            className="hover:text-pink-600 cursor-pointer transition-colors duration-300"
-                        >
-                            {item}
-                        </li>
-                    ))}
+            {/* <div
+                className={`md:hidden bg-white/90 backdrop-blur-xl mt-3 rounded-2xl shadow-xl overflow-hidden 
+                transition-all duration-500 
+                ${open ? "max-h-[500px] py-4" : "max-h-0"}`}
+            >
+                <ul className="flex flex-col space-y-4 px-6 text-[#8b5e3c] font-semibold">
+                    {menuItems.map((item) =>
+                        item.dropdown ? (
+                            <details key={item.name} className="group">
+                                <summary className="cursor-pointer flex justify-between items-center">
+                                    {item.name}
+                                </summary>
 
-                    <button
-                        className="bg-white text-[#dfa26d] border-2 border-[#dfa26d]  hover:bg-[#e8b67b]  px-6 py-2 rounded-full shadow-lg transition-transform hover:scale-105 duration-300"
-                    >
-                        Order Now
-                    </button>
-                    <button
-                        className="bg-white text-[#dfa26d] border-2 border-[#dfa26d]  hover:bg-[#e8b67b] 
-                 px-6 py-2 rounded-full shadow-lg
-                   transition-transform hover:scale-105 duration-300"
-                    >
-                        Login Now
-                    </button>
+                                <div className="mt-2 flex flex-col space-y-2 pl-3">
+                                    {item.dropdown.map((d) => (
+                                        <Link
+                                            key={d.label}
+                                            to={d.path}
+                                            onClick={() => setOpen(false)}
+                                            className="hover:text-[#c57b41]"
+                                        >
+                                            {d.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </details>
+                        ) : (
+                            <Link
+                                key={item.name}
+                                to={item.path}
+                                onClick={() => setOpen(false)}
+                                className="hover:text-[#c57b41]"
+                            >
+                                {item.name}
+                            </Link>
+                        )
+                    )} */}
+
+            {/* Buttons */}
+            {/* <Link to="/order" onClick={() => setOpen(false)}>
+                        <button className="w-full px-6 py-2 rounded-full bg-gradient-to-r from-[#dda56a] to-[#e8b381] 
+                        text-white font-semibold shadow-lg hover:scale-105 transition">
+                            Order Now
+                        </button>
+                    </Link>
+
+                    <Link to="/login" onClick={() => setOpen(false)}>
+                        <button className="w-full px-6 py-2 rounded-full bg-white text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition">
+                            Login Now
+                        </button>
+                    </Link>
+                </ul>
+            </div> */}
+
+            {/* Ipad view */}
+
+            <div
+                className={`xl:hidden bg-white/90 backdrop-blur-xl mt-3 rounded-2xl shadow-xl overflow-hidden 
+    transition-all duration-500 
+    ${open ? "max-h-[600px] py-4" : "max-h-0"}`}
+            >
+                <ul className="flex flex-col space-y-4 px-6 text-[#8b5e3c] font-semibold">
+                    {menuItems.map((item) =>
+                        item.dropdown ? (
+                            <details key={item.name} className="group">
+                                <summary className="cursor-pointer flex justify-between items-center">
+                                    {item.name}
+                                </summary>
+
+                                <div className="mt-2 flex flex-col space-y-2 pl-3">
+                                    {item.dropdown.map((d) => (
+                                        <Link
+                                            key={d.label}
+                                            to={d.path}
+                                            onClick={() => setOpen(false)}
+                                            className="hover:text-[#c57b41]"
+                                        >
+                                            {d.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </details>
+                        ) : (
+                            <Link
+                                key={item.name}
+                                to={item.path}
+                                onClick={() => setOpen(false)}
+                                className="hover:text-[#c57b41]"
+                            >
+                                {item.name}
+                            </Link>
+                        )
+                    )}
+
+                    {/* Buttons */}
+                    <Link to="/order" onClick={() => setOpen(false)}>
+                        <button className="w-full px-6 py-2 rounded-full bg-gradient-to-r from-[#dda56a] to-[#e8b381] 
+            text-white font-semibold shadow-lg hover:scale-105 transition">
+                            Order Now
+                        </button>
+                    </Link>
+
+                    <Link to="/login" onClick={() => setOpen(false)}>
+                        <button className="w-full px-6 py-2 rounded-full bg-white text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition">
+                            Login Now
+                        </button>
+                    </Link>
                 </ul>
             </div>
+
         </nav>
-
-
     );
 };
 
