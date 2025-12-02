@@ -10,6 +10,8 @@ import Register from "./components/auth/Register";
 import VerifyOTP from "./components/auth/VerifyOTP";
 import SetUsername from "./components/auth/SetUsername";
 import Login from "./components/auth/Login";
+import Profile from "./components/userProfile/Profile";
+import EditProfile from "./components/userProfile/EditProfile";
 
 export default function App() {
   return (
@@ -51,6 +53,22 @@ export default function App() {
           element={
             <AuthLayout>
               <Login />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <AuthLayout>
+              <Profile />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path="/edit-profile"
+          element={
+            <AuthLayout>
+              <EditProfile />
             </AuthLayout>
           }
         />

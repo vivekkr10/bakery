@@ -6,6 +6,11 @@
     font-family: "Roboto Slab", serif;
 }
 
+.profile{
+    background-image: url('https://media.istockphoto.com/id/880710798/vector/seamless-vector-bakery-pastry-pattern.jpg?s=612x612&w=0&k=20&c=e5TN-lIQoRhqrdIoJhUs_VfhzcmDxEY869s6s1SRYF8=');
+    min-height: 100vh;  
+}
+
 .yellow-circle {
     width: 80px;
     height: 80px; 
