@@ -115,7 +115,7 @@ router.post("/verify-otp", async (req, res) => {
   console.log("VERIFY QUERY:", query);
 
   const record = await Otp.findOne(query).sort({ createdAt: -1 });
-
+  
   console.log("DB RECORD:", record);
 
   if (!record) {
