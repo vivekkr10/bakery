@@ -5,11 +5,11 @@ import AuthLayout from "./components/layout/AuthLayout";
 
 import Homepage from "./components/homePage/Homepage";
 import About from "./components/About/About";
-
 import Register from "./components/auth/Register";
 import VerifyOTP from "./components/auth/VerifyOTP";
 import SetUsername from "./components/auth/SetUsername";
 import Login from "./components/auth/Login";
+import ForgetPassword from "./components/auth/ForgetPassword";
 
 export default function App() {
   return (
@@ -73,6 +73,20 @@ export default function App() {
           }
         />
 
+
+ <Route
+          path="/forget-password"
+          element={
+            <AuthLayout>
+              <ForgetPassword/>
+            </AuthLayout>
+          }
+        />
+
+
       </Routes>
+
+
+
   );
 }

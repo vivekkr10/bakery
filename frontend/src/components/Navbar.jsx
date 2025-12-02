@@ -101,9 +101,10 @@ const Navbar = () => {
                     </Link>
                     <Link to="/login">
                         <button className="px-6 py-2 rounded-full bg-white 
-                        text-[#8b5e3c] font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition">
+                        text-[#8b5e3c] font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition"  >
                             Login Now
                         </button>
+                      
                     </Link>
                 </div>
 

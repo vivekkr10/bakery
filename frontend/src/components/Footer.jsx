@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
     FaEnvelope,
     FaLinkedin,
-    FaInstagram,
+    FaInstagram,  
     FaFacebook,
     FaMapMarkerAlt,
     FaArrowRight,
