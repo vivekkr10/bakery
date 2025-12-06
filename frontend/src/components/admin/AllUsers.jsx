@@ -74,7 +74,7 @@ const AllUsers = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 lg:ml-64">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">All Users</h2>
 
       {loading ? (

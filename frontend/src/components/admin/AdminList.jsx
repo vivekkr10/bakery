@@ -5,7 +5,6 @@ const AdminList = () => {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all admins
   const fetchAdmins = async () => {
     try {
       const token = localStorage.getItem("adminToken");
@@ -22,7 +21,6 @@ const AdminList = () => {
     }
   };
 
-  // Delete admin
   const deleteAdmin = async (id) => {
     const yes = window.confirm("Are you sure you want to delete this admin?");
     if (!yes) return;
@@ -34,7 +32,6 @@ const AdminList = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Remove admin from UI
       setAdmins((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
       console.error("Delete error:", err);
@@ -47,37 +44,43 @@ const AdminList = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Admin Accounts</h2>
+    <div className="p-4 sm:p-6 lg:p-8 text-[#6a4a2b] lg:ml-64">
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 text-[#8B5E3C]">
+        Admin Accounts
+      </h2>
 
       {loading ? (
-        <p className="text-center text-gray-600">Loading...</p>
+        <p className="text-center py-8 text-[#6a4a2b]">Loading...</p>
       ) : admins.length === 0 ? (
-        <p className="text-center text-gray-500">No admins found.</p>
+        <p className="text-center py-8 text-[#6a4a2b]">No admins found.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 sm:space-y-5">
           {admins.map((admin) => (
             <div
               key={admin._id}
-              className="w-full bg-white border border-gray-200 rounded-xl shadow-sm p-5 flex justify-between items-center"
+              className="w-full bg-white border border-[#e6e0db] rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:bg-[#fff9f4] transition"
             >
               {/* LEFT SIDE */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+              <div className="min-w-0">
+                <h3 className="text-lg font-semibold text-[#8B5E3C] truncate">
                   {admin.name}
                 </h3>
-                <p className="text-sm text-gray-600">{admin.email}</p>
-                <p className="text-xs text-gray-400 mt-1">
+
+                <p className="text-sm text-[#6a4a2b] truncate">{admin.email}</p>
+
+                <p className="text-xs text-[#6a4a2b]/70 mt-1">
                   Created: {new Date(admin.createdAt).toLocaleDateString()}
                 </p>
+
+                {/* ROLE BADGE */}
                 <p className="text-xs mt-1 font-semibold">
                   Role:{" "}
                   <span
-                    className={
+                    className={`${
                       admin.role === "super-admin"
-                        ? "text-purple-600"
-                        : "text-blue-600"
-                    }
+                        ? "text-purple-700"
+                        : "text-[#d69e64]"
+                    } font-bold`}
                   >
                     {admin.role}
                   </span>
@@ -86,16 +89,15 @@ const AdminList = () => {
 
               {/* RIGHT SIDE */}
               <div>
-                {/* HIDE DELETE BUTTON FOR SUPER ADMIN */}
                 {admin.role !== "super-admin" ? (
                   <button
                     onClick={() => deleteAdmin(admin._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition"
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm sm:text-base font-medium shadow"
                   >
                     Delete
                   </button>
                 ) : (
-                  <span className="px-4 py-2 rounded-lg bg-gray-200 text-gray-500 text-sm">
+                  <span className="px-4 py-2 rounded-lg bg-gray-200 text-gray-500 text-sm shadow">
                     Protected
                   </span>
                 )}

@@ -21,7 +21,7 @@ const adminMiddleware = require("../middlewares/adminMiddleware");
 ============================ */
 
 // GET ALL PRODUCTS
-router.get("products/", getAllProducts);
+router.get("/all-products", getAllProducts);
 
 // GET SINGLE PRODUCT
 router.get("/single/:id", getProduct);

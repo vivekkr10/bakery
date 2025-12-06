@@ -41,7 +41,7 @@ const zoomCard = {
 
 const Category = () => {
     return (
-        <section className="w-full pt-20 pb-20 bg-[#e2bf9d]">
+        <section id="mostSellingItems" className="w-full pt-20 pb-20 bg-[#e2bf9d]">
             <div className="max-w-7xl mx-auto px-6 md:px-10">
 
                 {/* Most Selling Title */}

@@ -3,33 +3,29 @@ import StatsCards from "./StatsCards";
 import SalesChart from "./SalesChart";
 import OrdersPieChart from "./OrdersPieChart";
 import RecentOrder from "./RecentOrder";
-import TopBar from "./TopBar";
-import SideBar from "./SideBar";
+import Topbar from "./Topbar";
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* TOP BAR */}
-      <TopBar />
+    <div className="flex lg:ml-64 flex-col min-h-screen bg-[#fff9f4]">
+      {/* TOP NAV - Only visible on desktop */}
+      <Topbar />
 
-      {/* MAIN LAYOUT */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* PAGE CONTENT */}
+      <div className="p-4 sm:p-6 lg:p-8 pt-2 sm:pt-16 lg:pt-4">
+        {/* STATS CARDS */}
+        <StatsCards />
 
-        {/* MAIN CONTENT — scrollable */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
-          <StatsCards />
+        {/* CHARTS */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+          <SalesChart />
+          <OrdersPieChart />
+        </div>
 
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-            <SalesChart />
-            <OrdersPieChart />
-          </div>
-
-          {/* Recent Orders */}
-          <div className="mt-6">
-            <RecentOrder />
-          </div>
-        </main>
+        {/* RECENT ORDERS */}
+        <div className="mt-4 sm:mt-6">
+          <RecentOrder />
+        </div>
       </div>
     </div>
   );

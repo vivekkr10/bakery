@@ -65,11 +65,15 @@ const userRoutes = require("./src/routes/userRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
 const cartRoutes = require("./src/routes/cartRoutes");
+const productRoutes = require("./src/routes/productRoutes");
+// REMOVE: const adminProductRoutes = require("./src/routes/adminProductRoutes");
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/admin", adminRoutes); // This includes all admin product routes
 app.use("/api/cart", cartRoutes);
+app.use("/api/product", productRoutes); // Public product routes
+// REMOVE: app.use("/api/admin", adminProductRoutes); // Remove duplicate
 
 // Razorpay order creation route
 app.post("/api/payment/create-order", async (req, res) => {

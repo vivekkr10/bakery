@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast"; // Import Toaster
 
 import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
@@ -46,199 +47,220 @@ import FilterPage from "./components/homePage/Filter";
 
 export default function App() {
   return (
-    <Routes>
-      {/* ====================== DEFAULT ====================== */}
-      <Route path="/" element={<Navigate to="/home" />} />
-
-      {/* ====================== PUBLIC PAGES ====================== */}
-      <Route
-        path="/home"
-        element={
-          <MainLayout>
-            <Homepage />
-          </MainLayout>
-        }
+    <>
+      {/* Add Toaster at the top level - will work throughout the app */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: "#10B981",
+              secondary: "#fff",
+            },
+          },
+          error: {
+            duration: 4000,
+            iconTheme: {
+              primary: "#EF4444",
+              secondary: "#fff",
+            },
+          },
+          loading: {
+            duration: Infinity,
+          },
+        }}
       />
 
-      <Route
-        path="/about"
-        element={
-          <MainLayout>
-            <About />
-          </MainLayout>
-        }
-      />
+      <Routes>
 
-      <Route
-        path="/contact-us"
-        element={
-          <MainLayout>
-            <ContactUs />
-          </MainLayout>
-        }
-      />
+        {/* ====================== PUBLIC PAGES ====================== */}
+        <Route
+          path=""
+          element={
+            <MainLayout>
+              <Homepage />
+            </MainLayout>
+          }
+        />
 
-      {/* ====================== USER AUTH ====================== */}
-      <Route
-        path="/register"
-        element={
-          <AuthLayout>
-            <Register />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/about"
+          element={
+            <MainLayout>
+              <About />
+            </MainLayout>
+          }
+        />
 
-      <Route
-        path="/login"
-        element={
-          <AuthLayout>
-            <Login />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/contact-us"
+          element={
+            <MainLayout>
+              <ContactUs />
+            </MainLayout>
+          }
+        />
 
-      <Route
-        path="/verify-otp"
-        element={
-          <AuthLayout>
-            <VerifyOTP />
-          </AuthLayout>
-        }
-      />
+        {/* ====================== USER AUTH ====================== */}
+        <Route
+          path="/register"
+          element={
+            <AuthLayout>
+              <Register />
+            </AuthLayout>
+          }
+        />
 
-      <Route
-        path="/set-username"
-        element={
-          <AuthLayout>
-            <SetUsername />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/login"
+          element={
+            <AuthLayout>
+              <Login />
+            </AuthLayout>
+          }
+        />
 
-      <Route
-        path="/forget-password"
-        element={
-          <AuthLayout>
-            <ForgetPassword />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/verify-otp"
+          element={
+            <AuthLayout>
+              <VerifyOTP />
+            </AuthLayout>
+          }
+        />
 
-      <Route
-        path="/reset-password"
-        element={
-          <AuthLayout>
-            <ResetPassword />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/set-username"
+          element={
+            <AuthLayout>
+              <SetUsername />
+            </AuthLayout>
+          }
+        />
 
-      <Route
-        path="/otp-verify"
-        element={
-          <AuthLayout>
-            <VerifyForgetPasswordOTP />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/forget-password"
+          element={
+            <AuthLayout>
+              <ForgetPassword />
+            </AuthLayout>
+          }
+        />
 
-      {/* ====================== USER PROFILE ====================== */}
-      <Route
-        path="/profile"
-        element={
-          <AuthLayout>
-            <Profile />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/reset-password"
+          element={
+            <AuthLayout>
+              <ResetPassword />
+            </AuthLayout>
+          }
+        />
 
-      <Route
-        path="/edit-profile"
-        element={
-          <MainLayout>
-            <EditProfile />
-          </MainLayout>
-        }
-      />
-      <Route
-        path="/menu"
-        element={
-          <MainLayout>
-            <FilterPage />
-          </MainLayout>
-        }
-      />
+        <Route
+          path="/otp-verify"
+          element={
+            <AuthLayout>
+              <VerifyForgetPasswordOTP />
+            </AuthLayout>
+          }
+        />
 
-      {/* ====================== USER PRODUCTS ====================== */}
-      <Route
-        path="/products"
-        element={
-          <MainLayout>
-            <AllProducts />
-          </MainLayout>
-        }
-      />
+        {/* ====================== USER PROFILE ====================== */}
+        <Route
+          path="/profile"
+          element={
+            <AuthLayout>
+              <Profile />
+            </AuthLayout>
+          }
+        />
 
-      <Route
-        path="/product/:id"
-        element={
-          <MainLayout>
-            <ProductDetails />
-          </MainLayout>
-        }
-      />
-      <Route
-        path="/cart"
-        element={
-          <MainLayout>
-            <Cart />
-          </MainLayout>
-        }
-      />
+        <Route
+          path="/edit-profile"
+          element={
+            <MainLayout>
+              <EditProfile />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/menu"
+          element={
+            <MainLayout>
+              <FilterPage />
+            </MainLayout>
+          }
+        />
 
-      <Route
-        path="/order"
-        element={
-          <ProtectedRoutes>
-            <OrderSection />
-          </ProtectedRoutes>
-        }
-      />
+        {/* ====================== USER PRODUCTS ====================== */}
+        <Route
+          path="/products"
+          element={
+            <MainLayout>
+              <AllProducts />
+            </MainLayout>
+          }
+        />
 
-      {/* ====================== ADMIN LOGIN ONLY ====================== */}
-      <Route
-        path="/admin-login"
-        element={
-          <AuthLayout>
-            <AdminLogin />
-          </AuthLayout>
-        }
-      />
+        <Route
+          path="/product/:id"
+          element={
+            <MainLayout>
+              <ProductDetails />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <MainLayout>
+              <Cart />
+            </MainLayout>
+          }
+        />
 
-      {/* ====================== ADMIN DASHBOARD ====================== */}
-      <Route path="/admin" element={<DashboardLayout />}>
-        <Route path="dashboard" element={<DashboardHome />} />
-        <Route path="orders" element={<Orders />} />
-        <Route path="products" element={<Products />} />
-        <Route path="products/create" element={<CreateProduct />} />
-        <Route path="products/update/:id" element={<UpdateProduct />} />
-        <Route path="offers" element={<OffersPage />} />
-        <Route path="delivery" element={<Delivery />} />
-        <Route path="customer-detail" element={<Customers />} />
-        <Route path="create-admin" element={<CreateAdmin />} />
-        <Route path="all-admins" element={<AdminList />} />
-        <Route path="all-users" element={<AllUsers />} />
-      </Route>
+        <Route
+          path="/order"
+          element={
+            <ProtectedRoutes>
+              <OrderSection />
+            </ProtectedRoutes>
+          }
+        />
 
-      {/* ====================== 404 ====================== */}
-      <Route
-        path="*"
-        element={
-          <MainLayout>
-            <h1 className="text-3xl text-center mt-20">404 — Page Not Found</h1>
-          </MainLayout>
-        }
-      />
-    </Routes>
+        {/* ====================== ADMIN DASHBOARD ====================== */}
+        <Route path="/admin" element={<DashboardLayout />}>
+          <Route path="dashboard" element={<DashboardHome />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="products" element={<Products />} />
+          <Route path="products/create" element={<CreateProduct />} />
+          <Route path="products/update/:id" element={<UpdateProduct />} />
+          <Route path="offers" element={<OffersPage />} />
+          <Route path="delivery" element={<Delivery />} />
+          <Route path="customer-detail" element={<Customers />} />
+          <Route path="create-admin" element={<CreateAdmin />} />
+          <Route path="all-admins" element={<AdminList />} />
+          <Route path="all-users" element={<AllUsers />} />
+        </Route>
+
+        {/* ====================== 404 ====================== */}
+        <Route
+          path="*"
+          element={
+            <MainLayout>
+              <h1 className="text-3xl text-center mt-20">
+                404 — Page Not Found
+              </h1>
+            </MainLayout>
+          }
+        />
+      </Routes>
+    </>
   );
 }

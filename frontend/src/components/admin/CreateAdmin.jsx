@@ -46,7 +46,7 @@ const CreateAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-pink-50 to-orange-100 px-4">
+    <div className="min-h-screen lg:ml-64 flex justify-center items-center bg-gradient-to-br from-pink-50 to-orange-100 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
         <h2 className="text-3xl font-bold text-center text-[#c85a32] mb-6">
           Create Admin
