@@ -1,5 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast"; // Import Toaster
+import { Toaster } from "react-hot-toast";
+// import { Provider } from "react-redux";
+// import { PersistGate } from "redux-persist/integration/react";
+// import { store, persistor } from "./components/redux/Store";
+
+// Import ErrorBoundary and DebugInfo
 
 import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
@@ -28,6 +33,12 @@ import EditProfile from "./components/userProfile/EditProfile";
 import AllProducts from "./components/user/AllProducts";
 import ProductDetails from "./components/user/ProductDetails";
 
+// ---------- USER CART & ORDER ----------
+import Cart from "./components/homePage/Cart";
+import OrderNow from "./components/homePage/OrderNow";
+import OrderSuccess from "./components/homePage/OrderSuccess";
+import FilterPage from "./components/homePage/Filter";
+
 // ---------- ADMIN ----------
 import AdminLogin from "./components/admin/AdminLogin";
 import DashboardHome from "./components/admin/Dashboard";
@@ -41,9 +52,6 @@ import Customers from "./components/admin/CustomerDetail";
 import CreateAdmin from "./components/admin/CreateAdmin";
 import AdminList from "./components/admin/AdminList";
 import AllUsers from "./components/admin/AllUsers";
-import Cart from "./components/homePage/Cart";
-import OrderSection from "./components/homePage/OrderSection";
-import FilterPage from "./components/homePage/Filter";
 
 export default function App() {
   return (
@@ -77,11 +85,15 @@ export default function App() {
         }}
       />
 
+      {/* Wrap Routes with ErrorBoundary for global error handling */}
+
       <Routes>
+        {/* ====================== DEFAULT ====================== */}
+        <Route path="/" element={<Navigate to="/home" />} />
 
         {/* ====================== PUBLIC PAGES ====================== */}
         <Route
-          path=""
+          path="/home"
           element={
             <MainLayout>
               <Homepage />
@@ -189,6 +201,8 @@ export default function App() {
             </MainLayout>
           }
         />
+
+        {/* ====================== MENU & FILTERING ====================== */}
         <Route
           path="/menu"
           element={
@@ -216,6 +230,8 @@ export default function App() {
             </MainLayout>
           }
         />
+
+        {/* ====================== CART & CHECKOUT ====================== */}
         <Route
           path="/cart"
           element={
@@ -229,8 +245,31 @@ export default function App() {
           path="/order"
           element={
             <ProtectedRoutes>
-              <OrderSection />
+              <MainLayout>
+                <OrderNow />
+              </MainLayout>
             </ProtectedRoutes>
+          }
+        />
+
+        <Route
+          path="/order-success"
+          element={
+            <ProtectedRoutes>
+              <MainLayout>
+                <OrderSuccess />
+              </MainLayout>
+            </ProtectedRoutes>
+          }
+        />
+
+        {/* ====================== ADMIN LOGIN ONLY ====================== */}
+        <Route
+          path="/admin-login"
+          element={
+            <AuthLayout>
+              <AdminLogin />
+            </AuthLayout>
           }
         />
 
@@ -261,6 +300,8 @@ export default function App() {
           }
         />
       </Routes>
+
+      {/* Debug Info - only show in development mode */}
     </>
   );
 }

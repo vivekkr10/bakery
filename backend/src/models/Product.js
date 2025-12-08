@@ -9,6 +9,7 @@ const productSchema = new mongoose.Schema(
     category: { type: String, index: true }, // denormalized category name e.g., 'cake'
     images: [{ type: String }], // array of URLs/paths
     stock: { type: Number, default: 0 },
+    // weight: { type: Number, required: true },
     isFeatured: { type: Boolean, default: false },
     tags: [{ type: String }],
     rating: { type: Number, default: 0 },

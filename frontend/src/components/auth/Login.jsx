@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast"; // Add this import
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -8,7 +9,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAdminLogin, setIsAdminLogin] = useState(false);
-  const [animationStage, setAnimationStage] = useState("idle"); // idle, fading-out, fading-in
+  const [animationStage, setAnimationStage] = useState("idle");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ const Login = () => {
       const timer = setTimeout(() => {
         setIsAdminLogin(!isAdminLogin);
         setAnimationStage("fading-in");
-      }, 300); // Matches CSS animation duration
+      }, 300);
 
       return () => clearTimeout(timer);
     }
@@ -44,7 +45,7 @@ const Login = () => {
       (type === "admin" && isAdminLogin) ||
       (type === "user" && !isAdminLogin)
     ) {
-      return; // Already on this type
+      return;
     }
 
     setAnimationStage("fading-out");
@@ -67,7 +68,12 @@ const Login = () => {
           password: form.password,
         });
 
+        console.log("✅ Admin login response:", response.data);
+
+        // Store admin tokens
         localStorage.setItem("adminToken", response.data.token);
+        localStorage.setItem("token", response.data.token); // For compatibility
+
         localStorage.setItem(
           "adminInfo",
           JSON.stringify({
@@ -77,6 +83,7 @@ const Login = () => {
           })
         );
 
+        toast.success("Admin login successful!");
         navigate("/admin/dashboard");
       } else {
         // User login
@@ -85,20 +92,54 @@ const Login = () => {
           password: form.password,
         });
 
+        console.log("✅ User login response:", response.data);
+
+        // Store user tokens - CRITICAL FIX: Store with multiple keys
+        localStorage.setItem("userToken", response.data.token);
+        localStorage.setItem("token", response.data.token); // This is what OrderNow.jsx looks for
+        localStorage.setItem("authToken", response.data.token); // Alternative key
+
         localStorage.setItem(
           "userInfo",
           JSON.stringify({
             id: response.data.user.id,
             username: response.data.user.username,
             email: response.data.user.email,
+            name: response.data.user.name || response.data.user.username,
+            phone: response.data.user.phone || "",
           })
         );
 
-        localStorage.setItem("userToken", response.data.token);
-        navigate("/home");
+        // Also store as 'user' for compatibility
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: response.data.user.id,
+            username: response.data.user.username,
+            email: response.data.user.email,
+            name: response.data.user.name || response.data.user.username,
+            phone: response.data.user.phone || "",
+          })
+        );
+
+        console.log("💾 Stored in localStorage:", {
+          token: localStorage.getItem("token"),
+          userToken: localStorage.getItem("userToken"),
+          user: localStorage.getItem("user"),
+        });
+
+        toast.success("Login successful!");
+
+        // Check if there's a redirect path (e.g., from OrderNow)
+        const fromPath = window.location.state?.from || "/home";
+        navigate(fromPath);
       }
     } catch (err) {
-      setMessage(err?.response?.data?.message || "Invalid email or password.");
+      const errorMsg =
+        err?.response?.data?.message || "Invalid email or password.";
+      setMessage(errorMsg);
+      toast.error(errorMsg);
+      console.error("❌ Login error:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
@@ -235,6 +276,11 @@ const Login = () => {
           </p>
         </div>
       )}
+
+      {/* Debug info (remove in production) */}
+      <div className="mt-4 p-2 bg-gray-100 rounded text-xs text-gray-500">
+        <p>Debug: Storing token as "token" and "userToken"</p>
+      </div>
     </form>
   );
 

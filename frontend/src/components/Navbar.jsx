@@ -2,18 +2,47 @@ import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import logo from "../assets/homePage/logo White.png";
 import { FaShoppingCart } from "react-icons/fa";
-import { HashLink } from "react-router-hash-link";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-
   const [user, setUser] = useState(null);
-  const [cartCount, setCartCount] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const cart = useSelector((state) => state.cart || { items: [] });
+  const cartCount = cart.items?.length || 0;
+
+  // Fetch categories
   useEffect(() => {
-    const syncUserFromStorageOrAPI = async () => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:5000/api/product", {
+          params: { limit: 100 },
+        });
+
+        if (response.data && response.data.success) {
+          const uniqueCategories = [
+            ...new Set(response.data.products.map((p) => p.category)),
+          ];
+          setCategories(uniqueCategories.filter((c) => c && c.trim() !== ""));
+        }
+      } catch {
+        setCategories(["Classic Cakes", "Premium Cakes", "Donuts", "Cookies"]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Sync user
+  useEffect(() => {
+    const syncUser = async () => {
       try {
         const stored = localStorage.getItem("userInfo");
 
@@ -21,76 +50,50 @@ const Navbar = () => {
           setUser(JSON.parse(stored));
         } else {
           const token = localStorage.getItem("userToken");
+          if (!token) return setUser(null);
 
-          if (!token) {
-            setUser(null);
-          } else {
-            const res = await axios.get("http://localhost:5000/api/auth/me", {
-              headers: { Authorization: `Bearer ${token}` },
-            });
+          const res = await axios.get("http://localhost:5000/api/auth/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-            const u = res.data.user || res.data;
-
-            const cleanedUser = {
-              id: u.id || u._id,
-              username: u.username,
-              email: u.email,
-              profilePicture: u.profilePicture || "",
-            };
-
-            setUser(cleanedUser);
-            localStorage.setItem("userInfo", JSON.stringify(cleanedUser));
-          }
+          const u = res.data.user || res.data;
+          const cleaned = {
+            id: u.id || u._id,
+            username: u.username,
+            email: u.email,
+            profilePicture: u.profilePicture || "",
+          };
+          setUser(cleaned);
+          localStorage.setItem("userInfo", JSON.stringify(cleaned));
         }
-
-        const storedCart = localStorage.getItem("cartItems");
-        if (storedCart) {
-          try {
-            const items = JSON.parse(storedCart);
-            setCartCount(Array.isArray(items) ? items.length : 0);
-          } catch {
-            setCartCount(0);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to sync user:", err);
+      } catch {
         localStorage.removeItem("userToken");
         localStorage.removeItem("userInfo");
         setUser(null);
       }
     };
 
-    syncUserFromStorageOrAPI();
-    const handleStorageChange = () => {
-      syncUserFromStorageOrAPI();
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    syncUser();
+    window.addEventListener("storage", syncUser);
+    return () => window.removeEventListener("storage", syncUser);
   }, []);
 
+  // MENU ITEMS (layout like old navbar)
   const menuItems = [
-    {
-      name: "Home",
-      path: "/",
-    },
+    { name: "Home", path: "/" },
     {
       name: "Menu",
-      dropdown: [
-        { label: "Cakes", path: "/cakes" },
-        { label: "Pastries", path: "/pastries" },
-        { label: "Cupcakes", path: "/cupcakes" },
-        { label: "Bread & Cookies", path: "/cookies" },
-        { label: "More", path: "/menu" },
-      ],
+      dropdown: categories.map((cat) => ({
+        label: cat,
+        path: `/menu?category=${encodeURIComponent(cat)}`,
+      })),
     },
     {
       name: "Categories",
-      dropdown: [
-        { label: "Birthday Cakes", path: "/birthday" },
-        { label: "Anniversary Cakes", path: "/anniversary" },
-        { label: "Wedding Cakes", path: "/wedding" },
-      ],
+      dropdown: categories.map((cat) => ({
+        label: cat,
+        path: `/menu?category=${encodeURIComponent(cat)}`,
+      })),
     },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
@@ -103,7 +106,7 @@ const Navbar = () => {
         border border-white/20 px-5 sm:px-8 md:px-10 py-3 
         flex items-center justify-between transition-all"
       >
-        {/* Logo */}
+        {/* LOGO */}
         <Link to="/" className="flex items-center">
           <img
             src={logo}
@@ -134,16 +137,23 @@ const Navbar = () => {
                   group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto
                   transition-all duration-300 ease-out"
                 >
-                  {item.dropdown.map((d) => (
-                    <Link
-                      key={d.label}
-                      to={d.path}
-                      className="block px-4 py-2 text-sm text-[#8b5e3c]
-                      hover:bg-[#f8e9dd] hover:text-[#c57b41] transition"
-                    >
-                      {d.label}
-                    </Link>
-                  ))}
+                  {loading ? (
+                    <div className="px-4 py-2 text-sm text-[#8b5e3c]">
+                      Loading...
+                    </div>
+                  ) : (
+                    item.dropdown.map((d, index) => (
+                      <Link
+                        key={index}
+                        to={d.path}
+                        className="block px-4 py-2 text-sm text-[#8b5e3c]
+                        hover:bg-[#f8e9dd] hover:text-[#c57b41] transition"
+                        onClick={() => setOpen(false)}
+                      >
+                        {d.label}
+                      </Link>
+                    ))
+                  )}
                 </div>
               </li>
             ) : (
@@ -159,16 +169,16 @@ const Navbar = () => {
           )}
         </ul>
 
-        {/* DESKTOP BUTTONS */}
+        {/* DESKTOP RIGHT SIDE BUTTONS */}
         <div className="hidden xl:flex items-center gap-5">
-          <HashLink smooth to="/#mostSellingItems">
+          <Link to="/order">
             <button
               className="px-6 py-2 rounded-full bg-white 
-    text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition cursor-pointer border border-[#6f482a]"
+              text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition border border-[#6f482a]"
             >
               Order Now
             </button>
-          </HashLink>
+          </Link>
 
           {user ? (
             <div className="flex items-center gap-5">
@@ -211,7 +221,7 @@ const Navbar = () => {
             <Link to="/login">
               <button
                 className="px-6 py-2 rounded-full bg-white 
-                text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition cursor-pointer border border-[#6f482a]"
+                text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition border border-[#6f482a]"
               >
                 Login Now
               </button>
@@ -238,10 +248,10 @@ const Navbar = () => {
                   {item.name}
                 </summary>
 
-                <div className="mt-2 flex flex-col space-y-2 pl-3">
-                  {item.dropdown.map((d) => (
+                <div className="mt-2 flex flex-col space-y-2 pl-3 border-l">
+                  {item.dropdown.map((d, index) => (
                     <Link
-                      key={d.label}
+                      key={index}
                       to={d.path}
                       onClick={() => setOpen(false)}
                       className="hover:text-[#c57b41] transition"
@@ -263,59 +273,45 @@ const Navbar = () => {
             )
           )}
 
-          <div className="flex flex-row items-center gap-3">
-            <Link to="/order" onClick={() => setOpen(false)}>
-              <button
-                className="w-42 px-6 py-2 rounded-full bg-white 
-                text-[#8b5e3c] border border-[#6f482a] font-semibold shadow-lg hover:scale-105 transition"
-              >
-                Order Now
+          {/* MOBILE AUTH */}
+          {!user ? (
+            <Link to="/login" onClick={() => setOpen(false)}>
+              <button className="w-full px-6 py-2 rounded-full bg-white text-[#8b5e3c] font-semibold shadow-lg border border-[#6f482a]">
+                Login Now
               </button>
             </Link>
-
-            {!user ? (
-              <Link to="/login" onClick={() => setOpen(false)}>
-                <button className="w-42 px-6 py-2 rounded-full bg-white text-[#8b5e3c] font-semibold shadow-lg hover:scale-105 transition border border-[#6f482a]">
-                  Login Now
-                </button>
+          ) : (
+            <div className="flex items-center gap-5">
+              {/* CART */}
+              <Link to="/cart">
+                <div className="relative">
+                  <FaShoppingCart size={26} className="text-[#8b5e3c]" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
+                </div>
               </Link>
-            ) : (
-              <div className="flex items-center gap-5 ml-auto">
-                <Link to="/cart">
-                  <div className="relative">
-                    <FaShoppingCart
-                      size={26}
-                      className="text-[#8b5e3c] hover:text-[#f3d2ae] transition"
-                    />
-                    {cartCount > 0 && (
-                      <span
-                        className="absolute -top-2 -right-2 bg-red-500 text-white text-xs 
-                        w-5 h-5 flex items-center justify-center rounded-full"
-                      >
-                        {cartCount}
-                      </span>
-                    )}
-                  </div>
-                </Link>
 
-                <Link to="/profile">
-                  <div className="w-10 h-10 rounded-full overflow-hidden hover:scale-110 transition">
-                    {user?.profilePicture ? (
-                      <img
-                        src={user.profilePicture}
-                        alt="profile"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-[#d78f52] text-white flex items-center justify-center text-lg font-bold">
-                        {user?.username?.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              </div>
-            )}
-          </div>
+              {/* PROFILE */}
+              <Link to="/profile">
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  {user?.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt="profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#d78f52] text-white flex items-center justify-center text-lg font-bold">
+                      {user?.username?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            </div>
+          )}
         </ul>
       </div>
     </nav>

@@ -14,6 +14,7 @@ const Products = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState(null);
 
+  // Fetch all products
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -68,22 +69,21 @@ const Products = () => {
   };
 
   return (
-    <div className="p-6 lg:ml-64 text-[#6a4a2b]">
+    <div className="p-6 lg:ml-64">
       <Toaster position="top-right" />
-
-      <h2 className="text-2xl font-bold mb-4 text-[#8B5E3C]">Products</h2>
+      <h2 className="text-2xl font-bold mb-4">Products</h2>
 
       <button
         onClick={() => setShowModal(true)}
-        className="mb-4 px-4 py-2 bg-[#8B5E3C] text-white rounded-lg hover:bg-[#6a4a2b] transition shadow-md"
+        className="mb-4 px-4 py-2 bg-[#d69e64] text-white rounded-2xl hover:bg-[#b9854f]"
       >
         + Add New Product
       </button>
 
-      <div className="bg-white p-4 rounded-xl shadow-lg overflow-auto border border-[#e6e0db]">
-        <table className="w-full border-collapse min-w-[600px]">
+      <div className="bg-white p-4 rounded-xl shadow overflow-auto">
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-[#f7e8dc] text-[#6a4a2b]">
+            <tr className="bg-[#f7e8dc] text-[#3f2e20]">
               <th className="py-4 px-5 text-left font-semibold">Product</th>
               <th className="py-4 px-5 text-left font-semibold">Category</th>
               <th className="py-4 px-5 text-left font-semibold">Price</th>
@@ -113,37 +113,31 @@ const Products = () => {
               </tr>
             ) : (
               products.map((p) => (
-                <tr
-                  key={p._id}
-                  className="border-b border-[#e6e0db] hover:bg-[#fff9f4] transition"
-                >
+                <tr key={p._id} className="hover:bg-gray-50 text-[#3f2e20]">
                   <td className="py-4 px-5">{p.name}</td>
-                  <td className="py-4 px-5">{p.category}</td>
-                  <td className="py-4 px-5 font-medium">₹{p.price}</td>
-                  <td className="py-4 px-5">{p.stock}</td>
+                  <td>{p.category}</td>
+                  <td>₹{p.price}</td>
+                  <td>{p.stock}</td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        setSelectedProductId(p._id);
+                        setShowUpdateModal(true);
+                      }}
+                      className="px-3 py-2 bg-yellow-400 hover:bg-yellow-600 rounded mr-2"
+                    >
+                      Update
+                    </button>
 
-                  <td className="py-4 px-5">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          setSelectedProductId(p._id);
-                          setShowUpdateModal(true);
-                        }}
-                        className="px-3 py-1.5 bg-[#d69e64] hover:bg-[#c17f45] text-white rounded text-sm transition"
-                      >
-                        Update
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setDeleteProductId(p._id);
-                          setShowDeleteModal(true);
-                        }}
-                        className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => {
+                        setDeleteProductId(p._id);
+                        setShowDeleteModal(true);
+                      }}
+                      className="px-3 py-2 bg-red-400 hover:bg-red-600 text-white rounded"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))
@@ -168,15 +162,14 @@ const Products = () => {
         />
       )}
 
-      {/* DELETE CONFIRMATION MODAL */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-xl border border-[#e6e0db]">
-            <h3 className="text-xl font-semibold text-[#8B5E3C] mb-4">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+          <div className="bg-white w-[90%] max-w-md p-6 rounded-xl shadow-xl">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Delete Product?
             </h3>
 
-            <p className="text-[#6a4a2b] mb-6">
+            <p className="text-gray-600 mb-6">
               Are you sure you want to delete this product? This action cannot
               be undone.
             </p>
@@ -184,14 +177,14 @@ const Products = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-200 text-[#6a4a2b] rounded-lg hover:bg-gray-300 transition"
+                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleDeleteProduct}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
               >
                 Confirm Delete
               </button>

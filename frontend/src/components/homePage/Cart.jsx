@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   increaseQty,
   decreaseQty,
@@ -11,134 +12,173 @@ import { toast } from "react-hot-toast";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items, taxRate, delivery } = useSelector(selectCart);
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   const tax = subtotal * taxRate;
   const grandTotal = subtotal + tax + delivery;
 
-  // ✅ Razorpay with backend integration + React Hot Toast
-  const handlePayment = async () => {
-    try {
-      const res = await fetch(
-        "http://localhost:5000/api/payment/create-order",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: grandTotal }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (!data.success) return toast.error("Order creation failed");
-
-      const options = {
-        key: "rzp_test_Rn3xa74qiaEekq", // your Razorpay test key
-        amount: data.amount,
-        currency: data.currency,
-        order_id: data.order_id,
-        name: "My Bakery Store",
-        description: "Order Payment",
-        handler: function (response) {
-          toast.success("Payment Successful!");
-          dispatch(clearCart());
-        },
-        theme: { color: "#c43b52" },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (err) {
-      console.error(err);
-      toast.error("Payment failed. Please try again.");
+  const handleProceedToOrder = () => {
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
     }
+    navigate("/order");
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 p-6 lg:p-10 bg-gray-50 min-h-screen mt-24">
-      {/* LEFT SIDE - ITEMS */}
-      <div className="flex-1 w-full lg:w-2/3">
-        {items.length === 0 && (
-          <p className="text-center text-gray-500 mt-10">Your cart is empty</p>
-        )}
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="flex flex-col sm:flex-row items-center sm:items-start bg-white p-4 rounded-xl shadow-md mb-4"
-          >
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-24 h-24 sm:w-20 sm:h-20 rounded-lg mr-0 sm:mr-5 mb-2 sm:mb-0 object-cover"
-            />
+    <div className="bg-gray-50 min-h-screen mt-24 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Your Cart</h1>
 
-            <div className="flex-1 text-center sm:text-left mb-2 sm:mb-0">
-              <h4 className="text-lg font-medium">{item.name}</h4>
-              <p className="text-gray-700">₹{item.price}</p>
-            </div>
-
-            {/* Qty buttons */}
-            <div className="flex items-center gap-3 mb-2 sm:mb-0">
-              <button
-                className="px-3 py-1 bg-gray-200 rounded-md"
-                onClick={() => dispatch(decreaseQty(item.id))}
-              >
-                -
-              </button>
-              <span className="text-lg font-medium">{item.qty}</span>
-              <button
-                className="px-3 py-1 bg-gray-200 rounded-md"
-                onClick={() => dispatch(increaseQty(item.id))}
-              >
-                +
-              </button>
-            </div>
-
+        {items.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-xl shadow-sm">
+            <div className="text-gray-400 text-6xl mb-4">🛒</div>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+              Your cart is empty
+            </h2>
+            <p className="text-gray-500 mb-6">
+              Add some delicious items to get started!
+            </p>
             <button
-              className="text-red-600 hover:text-red-800 text-xl mt-2 sm:mt-0"
-              onClick={() => dispatch(deleteItem(item.id))}
+              onClick={() => navigate("/menu")}
+              className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
             >
-              🗑
+              Browse Menu
             </button>
           </div>
-        ))}
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* LEFT COLUMN - PRODUCTS */}
+            <div className="lg:col-span-2">
+              <div className="space-y-4">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex flex-col sm:flex-row items-center sm:items-start bg-white p-5 rounded-xl shadow-md border border-gray-100"
+                  >
+                    <img
+                      src={item.image || item.img} // Add this line - use item.image or item.img
+                      alt={item.name}
+                      className="w-28 h-28 sm:w-24 sm:h-24 rounded-lg object-cover mb-4 sm:mb-0 sm:mr-6"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/cake5.jpg"; // Fallback image
+                      }}
+                    />
 
-        {items.length > 0 && (
-          <button
-            onClick={() => {
-              dispatch(clearCart());
-              toast.success("Cart cleared successfully");
-            }}
-            className="mt-5 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 w-full sm:w-auto"
-          >
-            Clear Cart
-          </button>
+                    <div className="flex-1 text-center sm:text-left mb-4 sm:mb-0">
+                      <h4 className="text-xl font-semibold text-gray-800 mb-1">
+                        {item.name}
+                      </h4>
+                      <p className="text-gray-600 mb-2">
+                        ₹{item.price.toFixed(2)} each
+                      </p>
+                      <p className="text-rose-600 font-medium">
+                        Total: ₹{(item.price * item.qty).toFixed(2)}
+                      </p>
+                    </div>
+
+                    {/* Qty controls */}
+                    <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                      <button
+                        className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                        onClick={() => dispatch(decreaseQty(item.id))}
+                        disabled={item.qty <= 1}
+                      >
+                        <span className="text-xl font-bold text-gray-700">
+                          −
+                        </span>
+                      </button>
+                      <span className="text-xl font-bold w-8 text-center">
+                        {item.qty}
+                      </span>
+                      <button
+                        className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                        onClick={() => dispatch(increaseQty(item.id))}
+                      >
+                        <span className="text-xl font-bold text-gray-700">
+                          +
+                        </span>
+                      </button>
+                    </div>
+
+                    <button
+                      className="text-red-500 hover:text-red-700 text-2xl p-2 hover:bg-red-50 rounded-full transition-colors"
+                      onClick={() => dispatch(deleteItem(item.id))}
+                      title="Remove item"
+                    >
+                      🗑
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Clear Cart Button */}
+              <div className="mt-8 flex justify-between items-center">
+                <button
+                  onClick={() => navigate("/menu")}
+                  className="px-6 py-3 border-2 border-rose-600 text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                >
+                  ← Continue Shopping
+                </button>
+
+                <button
+                  onClick={() => {
+                    dispatch(clearCart());
+                    toast.success("Cart cleared successfully");
+                  }}
+                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Clear All Items
+                </button>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN - CHECKOUT BUTTON */}
+            <div className="lg:col-span-1">
+              <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 sticky top-28">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                  Ready to Order?
+                </h3>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Items ({items.length})</span>
+                    <span>₹{subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Tax (10%)</span>
+                    <span>₹{tax.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Delivery</span>
+                    <span>₹{delivery}</span>
+                  </div>
+                  <hr className="my-2" />
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Total Amount</span>
+                    <span className="text-rose-600">
+                      ₹{grandTotal.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleProceedToOrder}
+                  className="w-full py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white rounded-xl text-lg font-semibold hover:from-rose-700 hover:to-pink-700 transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                >
+                  Proceed to Checkout →
+                </button>
+
+                <p className="text-sm text-gray-500 text-center mt-4">
+                  Secure checkout · Free delivery over ₹500
+                </p>
+              </div>
+            </div>
+          </div>
         )}
-      </div>
-
-      {/* SUMMARY */}
-      <div className="w-full lg:w-1/3 bg-white p-6 rounded-xl shadow-md h-fit">
-        <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
-
-        <div className="space-y-2 text-gray-700">
-          <p>Subtotal: ₹{subtotal.toFixed(2)}</p>
-          <p>Tax (10%): ₹{tax.toFixed(2)}</p>
-          <p>Delivery: ₹{delivery}</p>
-        </div>
-
-        <hr className="my-4" />
-
-        <h2 className="text-2xl font-bold mb-4">
-          Grand Total: ₹{grandTotal.toFixed(2)}
-        </h2>
-
-        <button
-          onClick={handlePayment}
-          className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-lg"
-        >
-          Go to Payment
-        </button>
       </div>
     </div>
   );
