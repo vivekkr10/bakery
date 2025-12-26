@@ -3,7 +3,9 @@ const nodemailer = require("nodemailer");
 const sendContactMail = async ({ name, email, message }) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -11,8 +13,8 @@ const sendContactMail = async ({ name, email, message }) => {
     });
 
     const mailOptions = {
-      from: `"Bakery Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // OWNER EMAIL
+      from: `"Bakery Website" <${process.env.FROM_EMAIL}>`,
+      to: process.env.FROM_EMAIL,
       subject: "📩 New Contact Message",
       html: `
         <div style="font-family:Arial; padding:20px;">

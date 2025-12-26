@@ -1,10 +1,12 @@
 const nodemailer = require("nodemailer");
-const { otpTemplate } = require("./emailTemplates");  // ⬅ IMPORT TEMPLATE
+const { otpTemplate } = require("./emailTemplates");
 
 const sendOTPEmail = async (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -12,10 +14,10 @@ const sendOTPEmail = async (email, otp) => {
     });
 
     const mailOptions = {
-      from: `"Graphura" <${process.env.EMAIL_USER}>`,
+      from: `"Graphura" <${process.env.FROM_EMAIL}>`,
       to: email,
       subject: "Your OTP",
-      html: otpTemplate(otp),   // ⬅ USE TEMPLATE HERE
+      html: otpTemplate(otp),
     };
 
     await transporter.sendMail(mailOptions);
