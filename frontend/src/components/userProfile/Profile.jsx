@@ -412,8 +412,8 @@ export default function Profile() {
   // Session expired state
   if (sessionExpired) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center bg-[#f8f7f6]">
-        <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md text-center">
+      <div className="h-screen flex flex-col justify-center items-center bg-[#f8f7f6] ">
+        <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md text-center ">
           <div className="text-5xl mb-4">🔒</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Session Expired</h2>
           <p className="text-gray-600 mb-6">Your session has expired. Please login again.</p>
@@ -456,8 +456,8 @@ export default function Profile() {
   const hasProfilePic = Boolean(user?.profilePicture);
 
   return (
-    <div className="font-display bg-[#f8f7f6] min-h-screen text-[#181411] px-4 py-10">
-      <div className="mx-auto w-full max-w-7xl">
+    <div className="font-display bg-[#f8f7f6] min-h-screen text-[#181411] px-4 py-10 ">
+      <div className="mx-auto w-full max-w-7xl mt-15">
         <div className="flex flex-col gap-8 md:flex-row">
           {/* SIDEBAR */}
           <aside className="w-full md:w-64 lg:w-72 h-[300px]">

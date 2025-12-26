@@ -823,17 +823,7 @@ const OrderNow = () => {
                 🔒 Secure payment powered by Razorpay
               </p>
 
-              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h3 className="font-medium text-yellow-800 mb-2">
-                  ⚠️ Test Mode:
-                </h3>
-                <ul className="text-sm text-yellow-700 space-y-1">
-                  <li>• Card: 4111 1111 1111 1111</li>
-                  <li>• Expiry: Any future date</li>
-                  <li>• CVV: 123</li>
-                  <li>• UPI: success@razorpay</li>
-                </ul>
-              </div>
+             
 
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-700">
@@ -843,17 +833,10 @@ const OrderNow = () => {
                       "User"}
                   </span>
                 </p>
-                <p className="text-xs text-blue-600 mt-1">
-                  Using token: {userToken ? "✓ Valid" : "✗ Invalid"}
-                </p>
+               
               </div>
 
-              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-700">
-                  💡 Tip: Make sure Razorpay script is loaded. If payment
-                  doesn't open, refresh the page.
-                </p>
-              </div>
+             
             </div>
           </div>
         </div>

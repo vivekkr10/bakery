@@ -1,11 +1,15 @@
 import { Navigate } from "react-router-dom";
 
 const ProtectedSuperAdmin = ({ children }) => {
-  const token = localStorage.getItem("adminToken");
-  const role = localStorage.getItem("adminRole");
+  const adminToken = localStorage.getItem("adminToken");
+  const adminInfo = JSON.parse(localStorage.getItem("adminInfo"));
 
-  if (!token || role !== "super-admin") {
+  if (!adminToken) {
     return <Navigate to="/admin-login" replace />;
+  }
+
+  if (adminInfo?.role !== "super-admin") {
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   return children;

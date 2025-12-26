@@ -4,7 +4,6 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-/* AUTH ROUTES */
 router.post("/auth/register", authController.register);
 router.post("/auth/send-otp", authController.sendOtp);
 router.post("/auth/verify-otp", authController.verifyOtp);

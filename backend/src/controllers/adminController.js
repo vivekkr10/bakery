@@ -1,3 +1,4 @@
+
 const Admin = require("../models/Admin");
 const User = require("../models/User");
 const Product = require("../models/Product");
@@ -6,16 +7,29 @@ const CustomCakeOrder = require("../models/CustomCakeOrder");
 
 /* ================= SUPER ADMIN ================= */
 
+
+
 exports.registerSuperAdmin = async (req, res) => {
   try {
     const { name, email, password, secretKey } = req.body;
 
-    if (secretKey !== process.env.SUPER_ADMIN_SECRET) {
-      return res.status(403).json({ message: "Invalid secret key" });
+
+    if (!secretKey) {
+      return res.status(400).json({
+        message: "Secret key is required",
+      });
+    }
+
+    if (String(secretKey).trim() !== String(process.env.SUPER_ADMIN_SECRET).trim()) {
+      return res.status(403).json({
+        message: "Invalid secret key",
+      });
     }
 
     const exists = await Admin.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Admin already exists" });
+    if (exists) {
+      return res.status(400).json({ message: "Admin already exists" });
+    }
 
     const admin = await Admin.create({
       name,
@@ -26,12 +40,21 @@ exports.registerSuperAdmin = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      admin: { id: admin._id, email: admin.email, role: admin.role },
+      message: "Super admin registered successfully",
+      admin: {
+        id: admin._id,
+        email: admin.email,
+        role: admin.role,
+      },
     });
   } catch (err) {
+    console.error("❌ Super Admin Register Error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
+
+
 
 exports.adminLogin = async (req, res) => {
   try {
@@ -87,9 +110,17 @@ exports.getAdmins = async (req, res) => {
 
 
 exports.deleteAdmin = async (req, res) => {
+  if (req.admin._id.toString() === req.params.id) {
+    return res.status(400).json({
+      success: false,
+      message: "You cannot delete yourself",
+    });
+  }
+
   await Admin.findByIdAndDelete(req.params.id);
   res.json({ success: true });
 };
+
 
 /* ================= PRODUCTS ================= */
 

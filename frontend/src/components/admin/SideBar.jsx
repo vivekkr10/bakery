@@ -10,8 +10,9 @@ import {
   Users2,
 } from "lucide-react";
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+
 import logo from "../../assets/homePage/logo White.png";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SideBar = ({ closeSidebar }) => {
   const adminInfo = JSON.parse(localStorage.getItem("adminInfo"));
@@ -53,6 +54,14 @@ const menus = [
     setMobileOpen(false);
     if (closeSidebar) closeSidebar();
   };
+const navigate = useNavigate();
+
+const handleLogout = () => {
+  localStorage.removeItem("adminToken");
+  localStorage.removeItem("adminInfo");
+
+  navigate("/");
+};
 
   return (
     <>
@@ -126,6 +135,27 @@ const menus = [
             </Link>
           ))}
         </nav>
+{/* ACTION BUTTONS */}
+<div className="px-3 sm:px-4 mt-4 space-y-2">
+  {/* GO TO HOME */}
+  <button
+    onClick={() => navigate("/home")}
+    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+    font-semibold text-[#6a4a2b] bg-[#f3dfcf] hover:bg-[#e8d0b8] transition-all"
+  >
+    <Home size={20} />
+    Go to Home
+  </button>
+
+  {/* LOGOUT */}
+  <button
+    onClick={handleLogout}
+    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+    font-semibold text-white bg-[#8B5E3C] hover:bg-[#6a4a2b] transition-all"
+  >
+    Logout
+  </button>
+</div>
 
         {/* FOOTER - Bakery Copyright */}
         <div className="mt-auto p-3 sm:p-4 border-t border-[#d7b99b] shrink-0">
