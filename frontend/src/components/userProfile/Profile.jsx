@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 import { getImageUrl } from "../../utils/getImageUrl";
 
 export default function Profile() {
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  // const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

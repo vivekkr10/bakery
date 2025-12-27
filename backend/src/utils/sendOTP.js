@@ -53,9 +53,12 @@ const sendOTPEmail = async (email, otp) => {
     );
 
     console.log("📧 Brevo OTP sent:", response.data);
+    return true;
   } catch (err) {
-    console.error("❌ Brevo OTP Error:", err.response?.data || err.message);
-    throw new Error("Failed to send OTP Email");
+    console.error("❌ Brevo OTP Error:", err?.response?.data || err.message);
+
+    // ❗ IMPORTANT — do NOT crash the backend
+    return false;
   }
 };
 
