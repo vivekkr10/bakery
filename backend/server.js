@@ -15,6 +15,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://bakery-oa9j.vercel.app",
+      "https://bakery-website-jet.vercel.app",
       "https://bakery-oa9j-git-main-graphura-india-pvt-ltds-projects.vercel.app",
       "https://bakery-oa9j-vboodczv7-graphura-india-pvt-ltds-projects.vercel.app",
     ],
@@ -31,8 +32,6 @@ app.use(
 
 // 🔥 IMPORTANT for preflight
 // app.options("*", cors());
-
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
