@@ -543,7 +543,7 @@ export default function Profile() {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={handleLogout}
-                  className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2"
+                  className="px-5 py-2 bg-[#d78f52] text-white rounded-lg hover:bg-[#c97f45] transition flex items-center justify-center gap-2"
                 >
                   <i className="bx bx-log-out"></i>
                   Logout

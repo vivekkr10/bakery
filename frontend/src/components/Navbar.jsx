@@ -42,40 +42,39 @@ const Navbar = () => {
   }, []);
 
   // Sync user
-useEffect(() => {
-  const syncUser = async () => {
-    try {
-      const storedUser = localStorage.getItem("userInfo");
-      const storedAdmin = localStorage.getItem("adminInfo");
+  useEffect(() => {
+    const syncUser = async () => {
+      try {
+        const storedUser = localStorage.getItem("userInfo");
+        const storedAdmin = localStorage.getItem("adminInfo");
 
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else if (storedAdmin) {
-        const admin = JSON.parse(storedAdmin);
-        setUser({
-          id: admin.id,
-          username: "Admin",
-          email: admin.email,
-          role: admin.role,
-          profilePicture: "", // ya koi admin avatar
-        });
-      } else {
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        } else if (storedAdmin) {
+          const admin = JSON.parse(storedAdmin);
+          setUser({
+            id: admin.id,
+            username: "Admin",
+            email: admin.email,
+            role: admin.role,
+            profilePicture: "", // ya koi admin avatar
+          });
+        } else {
+          setUser(null);
+        }
+      } catch {
+        localStorage.removeItem("userToken");
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminInfo");
         setUser(null);
       }
-    } catch {
-      localStorage.removeItem("userToken");
-      localStorage.removeItem("userInfo");
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("adminInfo");
-      setUser(null);
-    }
-  };
+    };
 
-  syncUser();
-  window.addEventListener("storage", syncUser);
-  return () => window.removeEventListener("storage", syncUser);
-}, []);
-
+    syncUser();
+    window.addEventListener("storage", syncUser);
+    return () => window.removeEventListener("storage", syncUser);
+  }, []);
 
   // MENU ITEMS (layout like old navbar)
   const menuItems = [
@@ -191,12 +190,11 @@ useEffect(() => {
               <Link to="/profile">
                 <div className="w-10 h-10 rounded-full overflow-hidden hover:scale-110 transition">
                   {user?.profilePicture ? (
-                   <img
-  src={getImageUrl(user.profilePicture)}
-  alt="profile"
-  className="w-full h-full object-cover"
-/>
-
+                    <img
+                      src={getImageUrl(user.profilePicture)}
+                      alt="profile"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-[#d78f52] text-white flex items-center justify-center text-lg font-bold">
                       {user?.username?.charAt(0).toUpperCase()}
@@ -264,8 +262,11 @@ useEffect(() => {
           {/* MOBILE AUTH */}
           {!user ? (
             <Link to="/login" onClick={() => setOpen(false)}>
-              <button className="w-full px-6 py-2 rounded-full bg-white text-[#8b5e3c] font-semibold shadow-lg border border-[#6f482a]">
-                Login Now
+              <button
+                className="w-full px-6 py-2 rounded-full bg-[#d78f50] text-white font-semibold shadow-lg  hover:bg-[#cc8448] transition-colors duration-200
+"
+              >
+                Login
               </button>
             </Link>
           ) : (
@@ -286,12 +287,11 @@ useEffect(() => {
               <Link to="/profile">
                 <div className="w-10 h-10 rounded-full overflow-hidden">
                   {user?.profilePicture ? (
-                   <img
-  src={getImageUrl(user.profilePicture)}
-  alt="profile"
-  className="w-full h-full object-cover"
-/>
-
+                    <img
+                      src={getImageUrl(user.profilePicture)}
+                      alt="profile"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-[#d78f52] text-white flex items-center justify-center text-lg font-bold">
                       {user?.username?.charAt(0).toUpperCase()}
